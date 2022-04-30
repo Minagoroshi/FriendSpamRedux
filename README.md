@@ -1,7 +1,7 @@
 # FriendSpamRedux
 A simple tool to spam friend requests to people on vrchat
 
-##About 
+## About 
 This is just a simple tool I decided to remake and make public, I don't expect to update it that frequently but I have a few more simple features planned for it.
 
 ## Planned Features
