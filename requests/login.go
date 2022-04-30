@@ -64,7 +64,7 @@ type LoginResponse struct {
 	OfflineFriends        []string  `json:"offlineFriends"`
 }
 
-func Login(account string, proxy string, useProxy bool) (*resty.Response, error) {
+func Login(account string, proxy string, useProxy bool) (*resty.Response, error, error) {
 
 	client := resty.New()
 
@@ -83,9 +83,10 @@ func Login(account string, proxy string, useProxy bool) (*resty.Response, error)
 		SetResult(&LoginResponse{}).
 		Get("https://api.vrchat.cloud/api/1/auth/user")
 
+	var loginErr error
 	if !strings.Contains(string(resp.Body()), "currentAvatar") {
-		err = LoginFailed
+		loginErr = LoginFailed
 	}
 
-	return resp, err
+	return resp, err, loginErr
 }

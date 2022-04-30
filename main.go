@@ -96,18 +96,14 @@ func main() {
 				}
 
 				//Login to VRChat and get the cookies
-				loginResp, err := requests.Login(account, proxy, useProxy)
-
-				switch err {
-				case nil:
-					color.Success.Println("Account: " + strconv.Itoa(i) + " logged in successfully.")
-				case requests.LoginFailed:
+				loginResp, err, loginErr := requests.Login(account, proxy, useProxy)
+				if loginErr != nil {
 					color.Error.Println("Account: " + strconv.Itoa(i) + " failed to login. Please check your accounts file.")
 					continue
-				default:
-					fmt.Println(err)
+				}
+				if err != nil {
+					color.Error.Println("Error: " + err.Error())
 					continue
-
 				}
 
 				cookies := loginResp.RawResponse.Cookies()
