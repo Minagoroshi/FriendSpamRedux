@@ -43,3 +43,5 @@ func CheckProxy(proxy string) bool {
 	valid, _ := regexp.MatchString(proxyRegex, proxy)
 	return valid
 }
+
+//CheckAlive is a function to check if a proxy is alive by pinging it

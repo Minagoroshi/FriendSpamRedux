@@ -21,7 +21,7 @@ type FriendRequestResponse struct {
 //FriendRequest is a http Request to send a friend request to another user, and takes a userID as a parameter
 //also takes an auth token as a cookie
 //returns a FriendRequestResponse
-func FriendRequest(userid string, cookies []*http.Cookie, proxy string, useProxy bool) *resty.Response {
+func FriendRequest(userid string, cookies []*http.Cookie, proxy string, useProxy bool) (*resty.Response, error) {
 
 	client := resty.New()
 
@@ -30,13 +30,14 @@ func FriendRequest(userid string, cookies []*http.Cookie, proxy string, useProxy
 			proxy = "http://" + proxy
 		}
 		client.SetProxy(proxy)
+
 	}
 
-	resp, _ := client.R().
+	resp, err := client.R().
 		SetCookies(cookies).
 		SetHeader("Content-Type", "application/json").
 		SetResult(&FriendRequestResponse{}).
 		Post("https://api.vrchat.cloud/api/1/user/" + userid + "/friendRequest/")
 
-	return resp
+	return resp, err
 }

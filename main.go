@@ -96,11 +96,28 @@ func main() {
 				}
 
 				//Login to VRChat and get the cookies
-				loginResp := requests.Login(account, proxy, useProxy)
+				loginResp, err := requests.Login(account, proxy, useProxy)
+
+				switch err {
+				case nil:
+					color.Success.Println("Account: " + strconv.Itoa(i) + " logged in successfully.")
+				case requests.LoginFailed:
+					color.Error.Println("Account: " + strconv.Itoa(i) + " failed to login. Please check your accounts file.")
+					continue
+				default:
+					fmt.Println(err)
+					continue
+
+				}
+
 				cookies := loginResp.RawResponse.Cookies()
 
 				//Send the friend request
-				resp := requests.FriendRequest(userID, cookies, proxy, useProxy)
+				resp, err := requests.FriendRequest(userID, cookies, proxy, useProxy)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
 
 				//Check the response
 				if resp.Result().(*requests.FriendRequestResponse).Message == "" || resp.RawResponse.StatusCode == 200 {

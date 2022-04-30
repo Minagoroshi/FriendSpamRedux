@@ -2,11 +2,13 @@ package requests
 
 import (
 	"encoding/base64"
+	"errors"
 	"github.com/go-resty/resty/v2"
-	"github.com/gookit/color"
 	"strings"
 	"time"
 )
+
+var LoginFailed = errors.New("account login failed")
 
 //LoginResponse is the response from the login request
 type LoginResponse struct {
@@ -62,7 +64,7 @@ type LoginResponse struct {
 	OfflineFriends        []string  `json:"offlineFriends"`
 }
 
-func Login(account string, proxy string, useProxy bool) *resty.Response {
+func Login(account string, proxy string, useProxy bool) (*resty.Response, error) {
 
 	client := resty.New()
 
@@ -76,16 +78,14 @@ func Login(account string, proxy string, useProxy bool) *resty.Response {
 	//encode the account into base64
 	account = base64.StdEncoding.EncodeToString([]byte(account))
 
-	resp, _ := client.R().
+	resp, err := client.R().
 		SetHeader("Authorization", "Basic "+account).
 		SetResult(&LoginResponse{}).
 		Get("https://api.vrchat.cloud/api/1/auth/user")
 
-	if strings.Contains(string(resp.Body()), "currentAvatar") {
-		color.Success.Println("[+] Logged in successfully to account: " + account)
-	} else {
-		color.Error.Println("[-] Failed to login to account: " + account)
+	if !strings.Contains(string(resp.Body()), "currentAvatar") {
+		err = LoginFailed
 	}
 
-	return resp
+	return resp, err
 }
