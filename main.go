@@ -72,13 +72,12 @@ func main() {
 
 			//Begin Friend Spam
 			log.Println("Sending Friend Requests")
-		a:
+
 			for i, account := range accounts {
 				//Check if the account is valid
 				if !cmd.CheckAccounts(account) {
 					color.Error.Println("Account: " + strconv.Itoa(i) + " is invalid. Please check your accounts file.")
-					i++
-					goto a
+					continue
 				}
 
 				//Load proxies and login
@@ -89,7 +88,7 @@ func main() {
 					valid := cmd.CheckProxy(proxy)
 					if !valid {
 						color.Error.Println("Proxy: " + proxy + " is invalid. Please check your proxies file.")
-						goto a
+						continue
 					}
 					useProxy = true
 				} else {

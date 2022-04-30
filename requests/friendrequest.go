@@ -3,6 +3,7 @@ package requests
 import (
 	"github.com/go-resty/resty/v2"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -25,6 +26,9 @@ func FriendRequest(userid string, cookies []*http.Cookie, proxy string, useProxy
 	client := resty.New()
 
 	if useProxy {
+		if !strings.Contains(proxy, "http") || !strings.Contains(proxy, "https") {
+			proxy = "http://" + proxy
+		}
 		client.SetProxy(proxy)
 	}
 

@@ -66,7 +66,10 @@ func Login(account string, proxy string, useProxy bool) *resty.Response {
 
 	client := resty.New()
 
-	if useProxy == true {
+	if useProxy {
+		if !strings.Contains(proxy, "http") || !strings.Contains(proxy, "https") {
+			proxy = "http://" + proxy
+		}
 		client.SetProxy(proxy)
 	}
 
